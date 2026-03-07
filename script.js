@@ -11,7 +11,7 @@
 ───────────────────────────────────────────── */
 const TRAIN_SCHEDULE = [
   { start: "17:20", end: "19:40", color: "color1", name: "EX-1" },
-  { start: "17:25", end: "19:30", color: "color1", name: "EX-2" },
+  { start: "17:25", end: "19:30", color: "color1", name: "EX-3" },
   { start: "17:30", end: "19:40", color: "color1", name: "A1"   },
   { start: "17:40", end: "19:30", color: "color2", name: "B1"   },
   { start: "17:45", end: "19:50", color: "color2", name: "B2"   },
@@ -184,7 +184,7 @@ function renderTimeline(calc) {
     // Label: arrival
     addLabel(container, arrivalMins, 16, formatTime12(arrivalMins), "var(--accent2)", "");
     // Label: leave office
-    addLabel(container, officeLeave, 16, "Leave " + formatTime12(officeLeave), "var(--accent2)", "");
+    addLabel(container, officeLeave, 16, "Leave " + formatTime12(officeLeave), "var(--accent2)", "", "right");
   }
 
   /* ── Walk block (+ buffer already included in officeLeave) ── */
@@ -201,7 +201,7 @@ function renderTimeline(calc) {
       container.appendChild(wb2);
     }
     // Station arrival label
-    addLabel(container, stationArrival, 16, "Station " + formatTime12(stationArrival), "var(--accent)", "");
+    addLabel(container, stationArrival, 16, "Station " + formatTime12(stationArrival), "var(--accent)", "", "left");
   }
 
   /* ── Train bars ── */
@@ -228,21 +228,42 @@ function renderTimeline(calc) {
     bar.title            = `${t.name || ""} ${formatTime12(depMins)} → ${formatTime12(arrMins)}`;
 
     // Stagger overlapping trains vertically a bit
-    const overlap = TRAIN_SCHEDULE.slice(0, i).some(prev => {
-      const pd = parseTime(prev.start);
-      const pa = parseTime(prev.end);
-      return pd < arrMins && pa > depMins;
-    });
-    if (overlap) {
-      const base = isBest ? 88 : 96;
-      bar.style.top = `${base + 32}px`;
+    // const overlap = TRAIN_SCHEDULE.slice(0, i).some(prev => {
+    //   const pd = parseTime(prev.start);
+    //   const pa = parseTime(prev.end);
+    //   return pd < arrMins && pa > depMins;
+    // });
+    // if (overlap) {
+    //   const base = isBest ? 88 : 96;
+    //   bar.style.top = `${base + 32}px`;
+    // }
+
+    /* ── Train vertical stacking ── */
+
+    const ROW_HEIGHT = 32;
+    const BASE_TOP = 88;
+
+    let row;
+
+    if (isBest) {
+      row = 0; // BEST TRAIN ALWAYS TOP
+    } else {
+      const overlapsBefore = TRAIN_SCHEDULE.slice(0, i).filter(prev => {
+        const ps = parseTime(prev.start);
+        const pe = parseTime(prev.end);
+        return ps < arrMins && pe > depMins;
+      }).length;
+
+      row = overlapsBefore + 1; // shift below best
     }
+
+    bar.style.top = `${BASE_TOP + row * ROW_HEIGHT}px`;
 
     container.appendChild(bar);
 
     if (isBest) {
-      addLabel(container, depMins, isBest ? 140 : 130,
-        `🚆 ${formatTime12(depMins)}`, "var(--accent)", "");
+      addLabel(container, depMins, isBest ? 70 : 130,
+        `🚆${formatTime12(depMins)}`, "var(--accent)", "", "left");
     }
   });
 
@@ -264,12 +285,14 @@ function renderTimeline(calc) {
 }
 
 /** Helper: add a floating label on the timeline */
-function addLabel(container, timeMins, topPx, text, color, bg) {
+function addLabel(container, timeMins, topPx, text, color, bg, LRAlign = "nothing") {
   const pct = minsToPercent(timeMins);
   const el  = document.createElement("div");
   el.className = "tl-label";
   el.style.left       = `${pct}%`;
   el.style.top        = `${topPx}px`;
+  if (LRAlign === "right") el.style.transform = "translateX(-100%)";
+  if (LRAlign === "left") el.style.transform = "translateX(0%)";
   el.style.color      = color;
   el.style.background = bg || "transparent";
   el.textContent      = text;

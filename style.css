@@ -264,6 +264,7 @@ body {
 /* ─── Timeline ─── */
 .timeline-scroll-wrapper {
   overflow-x: auto;
+  overflow-y: auto;
   padding-bottom: 0.5rem;
 }
 
@@ -334,7 +335,7 @@ body {
 .tl-train-bar {
   position: absolute;
   top: 96px;
-  height: 28px;
+  height: 18px;
   border-radius: 4px;
   display: flex; align-items: center; padding: 0 6px;
   font-size: 0.58rem;
@@ -349,9 +350,10 @@ body {
 .tl-train-bar.best {
   opacity: 1;
   top: 88px;
-  height: 44px;
+  /* height: 44px; */
   font-size: 0.65rem;
   box-shadow: 0 0 12px rgba(240,192,64,0.35);
+  font-weight: 600;
 }
 
 .tl-train-bar.missed { opacity: 0.25; }
