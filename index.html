@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CommuteTrack — Office to Home</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-mark">CT</div>
+      <div>
+        <h1 class="app-title">CommuteTrack</h1>
+        <p class="app-sub">Office → Home Planner</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-clock" id="liveClock">--:--:--</div>
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <span class="theme-icon">☀</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- ═══════════════════════════════════════════
+         INPUTS PANEL
+    ═══════════════════════════════════════════ -->
+    <section class="panel inputs-panel">
+      <h2 class="panel-title"><span class="panel-num">01</span> Settings</h2>
+      <div class="inputs-grid">
+
+        <div class="input-group">
+          <label for="arrivalTime">Office Arrival Time</label>
+          <input type="time" id="arrivalTime" value="10:50" />
+        </div>
+
+        <div class="input-group">
+          <label for="workHours">Working Hours</label>
+          <input type="number" id="workHours" min="1" max="16" value="9" step="0.5" />
+          <span class="input-unit">hrs</span>
+        </div>
+
+        <div class="input-group">
+          <label for="walkTime">Walk to Station</label>
+          <input type="number" id="walkTime" min="0" max="120" value="20" />
+          <span class="input-unit">min</span>
+        </div>
+
+        <div class="input-group">
+          <label for="bufferTime">Buffer / Prep Time</label>
+          <input type="number" id="bufferTime" min="0" max="60" value="0" />
+          <span class="input-unit">min</span>
+        </div>
+
+        <div class="input-group">
+          <label for="busDuration">Bus After Train</label>
+          <input type="number" id="busDuration" min="0" max="120" value="30" />
+          <span class="input-unit">min</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         TODAY SUMMARY CARD
+    ═══════════════════════════════════════════ -->
+    <section class="panel summary-panel">
+      <h2 class="panel-title"><span class="panel-num">02</span> Today's Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">Arrived</span>
+          <span class="summary-value" id="sumArrival">—</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Leave Office</span>
+          <span class="summary-value" id="sumLeave">—</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">At Station</span>
+          <span class="summary-value" id="sumStation">—</span>
+        </div>
+        <div class="summary-item highlight-item">
+          <span class="summary-label">Best Train 🚆</span>
+          <span class="summary-value" id="sumTrain">—</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Train Arrives</span>
+          <span class="summary-value" id="sumTrainEnd">—</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Home ETA</span>
+          <span class="summary-value" id="sumHome">—</span>
+        </div>
+      </div>
+      <div class="warning-banner" id="warningBanner" style="display:none;">
+        ⚠ No available train after your work completion time. Check the schedule below.
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         TIMELINE
+    ═══════════════════════════════════════════ -->
+    <section class="panel timeline-panel">
+      <h2 class="panel-title"><span class="panel-num">03</span> Timeline</h2>
+      <div class="timeline-scroll-wrapper">
+        <div class="timeline-container" id="timelineContainer">
+          <!-- JS builds this -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         TRAIN SCHEDULE TABLE
+    ═══════════════════════════════════════════ -->
+    <section class="panel schedule-panel">
+      <h2 class="panel-title"><span class="panel-num">04</span> Train Schedule</h2>
+      <p class="schedule-note">Edit the <code>TRAIN_SCHEDULE</code> array in <code>script.js</code> to add or modify trains.</p>
+      <div class="table-wrapper">
+        <table class="schedule-table" id="scheduleTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Departs</th>
+              <th>Arrives</th>
+              <th>Duration</th>
+              <th>Color Tag</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody">
+            <!-- JS populates -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <span>CommuteTrack &mdash; Static · No backend · GitHub Pages ready</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
