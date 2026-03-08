@@ -169,6 +169,33 @@ function renderTimeline(calc) {
 
   const { arrivalMins, workEndMins, officeLeave, stationArrival, bestTrain, bestIdx, walkMins, bufferMins } = calc;
 
+    /* ── Dynamic vertical layout ── */
+  const ROW_HEIGHT = 25;
+
+  const sortedTrains = TRAIN_SCHEDULE
+    .map((t, i) => ({ ...t, originalIndex: i }))
+    .sort((a, b) => parseTime(a.start) - parseTime(b.start));
+
+  const bestSortedIndex = sortedTrains.findIndex(t => t.originalIndex === bestIdx);
+
+  const trainsBeforeBest = bestSortedIndex > 0 ? bestSortedIndex : 0;
+  const trainsAfterBest =
+    bestSortedIndex >= 0 ? (sortedTrains.length - bestSortedIndex - 1) : sortedTrains.length;
+
+  const TOP_PADDING = 36;          // space for hour labels
+  const TRAIN_LABEL_GAP = 20;      // gap between upper trains and work block
+  const WORK_BLOCK_HEIGHT = 56;    // approx visual height of work block
+  const GAP_BELOW_WORK = 0;       // gap between work block and best train
+
+  // earliest trains appear above work block
+  const upperTrainArea = trainsBeforeBest * ROW_HEIGHT;
+
+  // dynamic tops
+  const WORK_TOP = TOP_PADDING + upperTrainArea + TRAIN_LABEL_GAP;
+  const BEST_ROW_TOP = WORK_TOP + WORK_BLOCK_HEIGHT + GAP_BELOW_WORK;
+
+
+
   /* ── Work block ── */
   const wLeft  = minsToPercent(arrivalMins);
   const wRight = minsToPercent(officeLeave);
@@ -178,13 +205,14 @@ function renderTimeline(calc) {
     wb.className = "tl-work-block";
     wb.style.left  = `${wLeft}%`;
     wb.style.width = `${wWidth}%`;
+    wb.style.top   = `${WORK_TOP}px`;
     wb.textContent = wWidth > 4 ? "WORK" : "";
     container.appendChild(wb);
 
     // Label: arrival
-    addLabel(container, arrivalMins, 16, formatTime12(arrivalMins), "var(--accent2)", "");
+    addLabel(container, arrivalMins, WORK_TOP - 18, formatTime12(arrivalMins), "var(--accent2)", "");
     // Label: leave office
-    addLabel(container, officeLeave, 16, "Leave " + formatTime12(officeLeave), "var(--accent2)", "", "right");
+    addLabel(container, officeLeave, WORK_TOP - 18, "Leave " + formatTime12(officeLeave), "var(--accent2)", "", "right");
   }
 
   /* ── Walk block (+ buffer already included in officeLeave) ── */
@@ -197,15 +225,144 @@ function renderTimeline(calc) {
       wb2.className = "tl-walk-block";
       wb2.style.left  = `${walkLeft}%`;
       wb2.style.width = `${walkW}%`;
+      wb2.style.top   = `${WORK_TOP}px`;
       wb2.textContent = walkW > 3 ? "WALK" : "";
       container.appendChild(wb2);
     }
     // Station arrival label
-    addLabel(container, stationArrival, 16, "Station " + formatTime12(stationArrival), "var(--accent)", "", "left");
+    addLabel(container, stationArrival, WORK_TOP - 18, "Station " + formatTime12(stationArrival), "var(--accent)", "", "left");  
   }
 
   /* ── Train bars ── */
-  TRAIN_SCHEDULE.forEach((t, i) => {
+  // TRAIN_SCHEDULE.forEach((t, i) => {
+  //   const depMins = parseTime(t.start);
+  //   const arrMins = parseTime(t.end);
+  //   const left  = minsToPercent(depMins);
+  //   const right = minsToPercent(arrMins);
+  //   const width = right - left;
+  //   if (width <= 0) return;
+
+  //   const isBest   = i === bestIdx;
+  //   const isMissed = depMins < stationArrival;
+
+  //   const cm = COLOR_MAP[t.color] || COLOR_MAP.color1;
+  //   const bar = document.createElement("div");
+  //   bar.className = `tl-train-bar${isBest ? " best" : isMissed ? " missed" : ""}`;
+  //   bar.style.left       = `${left}%`;
+  //   bar.style.width      = `${width}%`;
+  //   bar.style.background = cm.bg;
+  //   bar.style.border     = `1px solid ${cm.border}`;
+  //   bar.style.color      = cm.text;
+  //   bar.textContent      = width > 3 ? (isBest ? `★ ${t.name || t.start}` : (t.name || t.start)) : "";
+  //   bar.title            = `${t.name || ""} ${formatTime12(depMins)} → ${formatTime12(arrMins)}`;
+
+  //   // Stagger overlapping trains vertically a bit
+  //   // const overlap = TRAIN_SCHEDULE.slice(0, i).some(prev => {
+  //   //   const pd = parseTime(prev.start);
+  //   //   const pa = parseTime(prev.end);
+  //   //   return pd < arrMins && pa > depMins;
+  //   // });
+  //   // if (overlap) {
+  //   //   const base = isBest ? 88 : 96;
+  //   //   bar.style.top = `${base + 32}px`;
+  //   // }
+
+  //   /* ── Train vertical stacking ── */
+
+  //   const ROW_HEIGHT = 32;
+  //   const BASE_TOP = 88;
+
+  //   let row;
+
+  //   if (isBest) {
+  //     row = 0; // BEST TRAIN ALWAYS TOP
+  //   } else {
+  //     const overlapsBefore = TRAIN_SCHEDULE.slice(0, i).filter(prev => {
+  //       const ps = parseTime(prev.start);
+  //       const pe = parseTime(prev.end);
+  //       return ps < arrMins && pe > depMins;
+  //     }).length;
+
+  //     row = overlapsBefore + 1; // shift below best
+  //   }
+
+  //   bar.style.top = `${BASE_TOP + row * ROW_HEIGHT}px`;
+
+  //   container.appendChild(bar);
+
+  //   if (isBest) {
+  //     addLabel(container, depMins, isBest ? 70 : 130,
+  //       `🚆${formatTime12(depMins)}`, "var(--accent)", "", "left");
+  //   }
+  // });
+
+    /* ── Train bars ── */
+  // const ROW_HEIGHT = 32;
+  // const BASE_TOP = 125;
+
+  // // sort trains by departure time so rows follow start time order
+  // const sortedTrains = TRAIN_SCHEDULE
+  //   .map((t, i) => ({ ...t, originalIndex: i }))
+  //   .sort((a, b) => parseTime(a.start) - parseTime(b.start));
+
+  // let nextRow = 1; // row 0 reserved for best train
+
+  // sortedTrains.forEach((t) => {
+  //   const i = t.originalIndex;
+  //   const depMins = parseTime(t.start);
+  //   const arrMins = parseTime(t.end);
+  //   const left  = minsToPercent(depMins);
+  //   const right = minsToPercent(arrMins);
+  //   const width = right - left;
+  //   if (width <= 0) return;
+
+  //   const isBest   = i === bestIdx;
+  //   const isMissed = depMins < stationArrival;
+
+  //   const cm = COLOR_MAP[t.color] || COLOR_MAP.color1;
+
+  //   const bar = document.createElement("div");
+  //   bar.className = `tl-train-bar${isBest ? " best" : isMissed ? " missed" : ""}`;
+  //   bar.style.left       = `${left}%`;
+  //   bar.style.width      = `${width}%`;
+  //   bar.style.background = cm.bg;
+  //   bar.style.border     = `1px solid ${cm.border}`;
+  //   bar.style.color      = cm.text;
+  //   bar.textContent      = width > 3 ? (isBest ? `★ ${t.name || t.start}` : (t.name || t.start)) : "";
+  //   bar.title            = `${t.name || ""} ${formatTime12(depMins)} → ${formatTime12(arrMins)}`;
+
+  //   let row;
+  //   if (isBest) {
+  //     row = 0; // best train stays on top
+  //   } else {
+  //     row = nextRow;
+  //     nextRow++;
+  //   }
+
+  //   bar.style.top = `${BASE_TOP + row * ROW_HEIGHT}px`;
+  //   container.appendChild(bar);
+
+  //   if (isBest) {
+  //     addLabel(
+  //       container,
+  //       depMins,
+  //       BASE_TOP - 18,
+  //       `🚆 ${formatTime12(depMins)}`,
+  //       "var(--accent)",
+  //       "",
+  //       "left"
+  //     );
+  //   }
+  // });
+
+  // // increase container height dynamically so vertical scroll works
+  // const totalRows = TRAIN_SCHEDULE.length;
+  // const requiredHeight = BASE_TOP + totalRows * ROW_HEIGHT + 60;
+  // container.style.height = `${Math.max(220, requiredHeight)}px`;
+
+  /* ── Train bars ── */
+  sortedTrains.forEach((t, sortedIndex) => {
+    const i = t.originalIndex;
     const depMins = parseTime(t.start);
     const arrMins = parseTime(t.end);
     const left  = minsToPercent(depMins);
@@ -217,6 +374,7 @@ function renderTimeline(calc) {
     const isMissed = depMins < stationArrival;
 
     const cm = COLOR_MAP[t.color] || COLOR_MAP.color1;
+
     const bar = document.createElement("div");
     bar.className = `tl-train-bar${isBest ? " best" : isMissed ? " missed" : ""}`;
     bar.style.left       = `${left}%`;
@@ -227,45 +385,48 @@ function renderTimeline(calc) {
     bar.textContent      = width > 3 ? (isBest ? `★ ${t.name || t.start}` : (t.name || t.start)) : "";
     bar.title            = `${t.name || ""} ${formatTime12(depMins)} → ${formatTime12(arrMins)}`;
 
-    // Stagger overlapping trains vertically a bit
-    // const overlap = TRAIN_SCHEDULE.slice(0, i).some(prev => {
-    //   const pd = parseTime(prev.start);
-    //   const pa = parseTime(prev.end);
-    //   return pd < arrMins && pa > depMins;
-    // });
-    // if (overlap) {
-    //   const base = isBest ? 88 : 96;
-    //   bar.style.top = `${base + 32}px`;
-    // }
+    let top;
 
-    /* ── Train vertical stacking ── */
-
-    const ROW_HEIGHT = 32;
-    const BASE_TOP = 88;
-
-    let row;
-
-    if (isBest) {
-      row = 0; // BEST TRAIN ALWAYS TOP
+    if (bestSortedIndex === -1) {
+      top = BEST_ROW_TOP + sortedIndex * ROW_HEIGHT;
+    } else if (sortedIndex < bestSortedIndex) {
+      // earlier trains above work block, earliest one at the very top
+      top = TOP_PADDING + sortedIndex * ROW_HEIGHT;
+    } else if (sortedIndex === bestSortedIndex) {
+      // best train just below work block
+      top = BEST_ROW_TOP;
     } else {
-      const overlapsBefore = TRAIN_SCHEDULE.slice(0, i).filter(prev => {
-        const ps = parseTime(prev.start);
-        const pe = parseTime(prev.end);
-        return ps < arrMins && pe > depMins;
-      }).length;
-
-      row = overlapsBefore + 1; // shift below best
+      // later trains continue below best train
+      const downOffset = sortedIndex - bestSortedIndex;
+      top = BEST_ROW_TOP + downOffset * ROW_HEIGHT;
     }
 
-    bar.style.top = `${BASE_TOP + row * ROW_HEIGHT}px`;
-
+    bar.style.top = `${top}px`;
     container.appendChild(bar);
 
     if (isBest) {
-      addLabel(container, depMins, isBest ? 70 : 130,
-        `🚆${formatTime12(depMins)}`, "var(--accent)", "", "left");
+      addLabel(
+        container,
+        depMins,
+        BEST_ROW_TOP - 18,
+        `🚆 ${formatTime12(depMins)}`,
+        "var(--accent)",
+        "",
+        "left"
+      );
     }
   });
+
+  // dynamic height
+  const contentBottom =
+  bestSortedIndex >= 0
+    ? BEST_ROW_TOP + (trainsAfterBest + 1) * ROW_HEIGHT
+    : WORK_TOP + WORK_BLOCK_HEIGHT + sortedTrains.length * ROW_HEIGHT;
+
+  container.style.height = `${Math.max(260, contentBottom + 40)}px`;
+
+
+  
 
   /* ── NOW line ── */
   const now = nowMins();
