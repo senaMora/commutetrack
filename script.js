@@ -15,34 +15,34 @@ Slow → color3
 */
 // bambalapitiya to panadura
 const TRAIN_SCHEDULE = [
-  { start: "04:32", end: "05:01", color: "color1", name: "8710" },
-  { start: "05:53", end: "06:32", color: "color3", name: "1507" },
-  { start: "06:10", end: "06:50", color: "color3", name: "1512" },
-  { start: "06:48", end: "07:28", color: "color3", name: "3800" },
-  { start: "07:20", end: "07:56", color: "color2", name: "4856" },
-  { start: "07:55", end: "08:35", color: "color2", name: "3803" },
-  { start: "08:10", end: "08:50", color: "color1", name: "1531" },
-  { start: "08:59", end: "09:39", color: "color3", name: "8736" },
-  { start: "09:52", end: "10:45", color: "color3", name: "8741" },
-  { start: "11:28", end: "12:08", color: "color3", name: "8742" },
-  { start: "12:50", end: "13:30", color: "color3", name: "8744" },
-  { start: "13:48", end: "14:28", color: "color3", name: "8748" },
-  { start: "14:13", end: "14:53", color: "color3", name: "8751" },
-  { start: "14:28", end: "15:08", color: "color3", name: "8749" },
-  { start: "15:38", end: "16:18", color: "color3", name: "8756" },
-  { start: "16:30", end: "17:00", color: "color1", name: "8765" },
-  { start: "16:36", end: "17:15", color: "color3", name: "8761" },
-  { start: "16:45", end: "17:18", color: "color1", name: "8763" },
-  { start: "17:20", end: "17:48", color: "color1", name: "8062" },
-  { start: "17:35", end: "18:12", color: "color3", name: "8759" },
-  { start: "18:05", end: "18:45", color: "color2", name: "1595" },
-  { start: "18:30", end: "18:57", color: "color1", name: "8766" },
-  { start: "18:33", end: "19:12", color: "color3", name: "8773" },
-  { start: "18:49", end: "19:30", color: "color3", name: "8772" },
-  { start: "19:29", end: "20:05", color: "color1", name: "8777" },
-  { start: "20:03", end: "20:43", color: "color3", name: "8780" },
-  { start: "20:53", end: "21:33", color: "color3", name: "8782" },
-  { start: "21:48", end: "22:28", color: "color3", name: "8783" },
+  { start: "04:32", end: "05:01", color: "color1", name: "8710", type: "Express" },
+  { start: "05:53", end: "06:32", color: "color3", name: "1507", type: "Slow" },
+  { start: "06:10", end: "06:50", color: "color3", name: "1512", type: "Slow" },
+  { start: "06:48", end: "07:28", color: "color3", name: "3800", type: "Slow" },
+  { start: "07:20", end: "07:56", color: "color2", name: "4856", type: "Semi Express" },
+  { start: "07:55", end: "08:35", color: "color2", name: "3803", type: "Semi Express" },
+  { start: "08:10", end: "08:50", color: "color1", name: "1531", type: "Express" },
+  { start: "08:59", end: "09:39", color: "color3", name: "8736", type: "Slow" },
+  { start: "09:52", end: "10:45", color: "color3", name: "8741", type: "Slow" },
+  { start: "11:28", end: "12:08", color: "color3", name: "8742", type: "Slow" },
+  { start: "12:50", end: "13:30", color: "color3", name: "8744", type: "Slow" },
+  { start: "13:48", end: "14:28", color: "color3", name: "8748", type: "Slow" },
+  { start: "14:13", end: "14:53", color: "color3", name: "8751", type: "Slow" },
+  { start: "14:28", end: "15:08", color: "color3", name: "8749", type: "Slow" },
+  { start: "15:38", end: "16:18", color: "color3", name: "8756", type: "Slow" },
+  { start: "16:30", end: "17:00", color: "color1", name: "8765", type: "Express" },
+  { start: "16:36", end: "17:15", color: "color3", name: "8761", type: "Slow" },
+  { start: "16:45", end: "17:18", color: "color1", name: "8763", type: "Express" },
+  { start: "17:20", end: "17:48", color: "color1", name: "8062", type: "Express" },
+  { start: "17:35", end: "18:12", color: "color3", name: "8759", type: "Slow" },
+  { start: "18:05", end: "18:45", color: "color2", name: "1595", type: "Semi Express" },
+  { start: "18:30", end: "18:57", color: "color1", name: "8766", type: "Express" },
+  { start: "18:33", end: "19:12", color: "color3", name: "8773", type: "Slow" },
+  { start: "18:49", end: "19:30", color: "color3", name: "8772", type: "Slow" },
+  { start: "19:29", end: "20:05", color: "color1", name: "8777", type: "Express" },
+  { start: "20:03", end: "20:43", color: "color3", name: "8780", type: "Slow" },
+  { start: "20:53", end: "21:33", color: "color3", name: "8782", type: "Slow" },
+  { start: "21:48", end: "22:28", color: "color3", name: "8783", type: "Slow" }
 ];
 
 /* ─────────────────────────────────────────────
@@ -517,7 +517,7 @@ function renderTable(calc) {
       <td>${formatTime12(depMins)}</td>
       <td>${formatTime12(arrMins)}</td>
       <td>${durStr}</td>
-      <td><span class="color-dot" style="background:${cm.border};"></span>${t.color}</td>
+      <td><span class="color-dot" style="background:${cm.border};"></span>${t.type}</td>
       <td>${statusHtml}</td>
     `;
     tbody.appendChild(tr);
