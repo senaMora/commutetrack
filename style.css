@@ -262,8 +262,9 @@ body {
 }
 
 /* ─── Timeline ─── */
-.timeline-scroll-wrapper {
+/* .timeline-scroll-wrapper {
   overflow-x: auto;
+  overflow-y: auto;
   padding-bottom: 0.5rem;
 }
 
@@ -275,6 +276,27 @@ body {
   border-radius: 10px;
   border: 1px solid var(--border);
   overflow: hidden;
+} */
+
+.timeline-scroll-wrapper {
+  overflow: auto;
+  max-height: none;      /* no fixed visible height */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.timeline-scroll-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.timeline-container {
+  position: relative;
+  min-width: 700px;
+  min-height: 220px;
+  background: var(--bg-panel2);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  overflow: visible;
 }
 
 /* Hour grid lines + labels */
@@ -286,7 +308,7 @@ body {
   opacity: 0.5;
 }
 
-.tl-hour-label {
+/* .tl-hour-label {
   position: absolute;
   bottom: 8px;
   font-family: 'Space Mono', monospace;
@@ -294,12 +316,25 @@ body {
   color: var(--text-muted);
   transform: translateX(-50%);
   white-space: nowrap;
+} */
+
+.tl-hour-label {
+  position: absolute;
+  top: 10px;                /* move to top */
+  transform: translateX(-50%);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
 }
 
 /* Work block */
 .tl-work-block {
   position: absolute;
-  top: 32px;
+  top: 65px;
   height: 48px;
   background: var(--work-block);
   border: 1px solid var(--accent2);
@@ -316,7 +351,7 @@ body {
 /* Walk block */
 .tl-walk-block {
   position: absolute;
-  top: 32px;
+  top: 65px;
   height: 48px;
   background: var(--walk-block);
   border: 1px solid var(--accent);
@@ -331,10 +366,10 @@ body {
 }
 
 /* Train bar */
-.tl-train-bar {
+/* .tl-train-bar {
   position: absolute;
   top: 96px;
-  height: 28px;
+  height: 18px;
   border-radius: 4px;
   display: flex; align-items: center; padding: 0 6px;
   font-size: 0.58rem;
@@ -349,12 +384,40 @@ body {
 .tl-train-bar.best {
   opacity: 1;
   top: 88px;
-  height: 44px;
   font-size: 0.65rem;
   box-shadow: 0 0 12px rgba(240,192,64,0.35);
+  font-weight: 600;
 }
 
-.tl-train-bar.missed { opacity: 0.25; }
+.tl-train-bar.missed { opacity: 0.25; } */
+
+/* Train bar */
+.tl-train-bar {
+  position: absolute;
+  height: 15px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  font-size: 0.58rem;
+  font-family: 'Space Mono', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 0.55;
+  transition: opacity 0.2s;
+  cursor: default;
+}
+
+.tl-train-bar.best {
+  opacity: 1;
+  font-size: 0.65rem;
+  box-shadow: 0 0 12px rgba(240,192,64,0.35);
+  font-weight: 600;
+}
+
+.tl-train-bar.missed {
+  opacity: 0.25;
+}
 
 /* Vertical tick marks */
 .tl-tick {
@@ -375,7 +438,7 @@ body {
 
 .tl-now-label {
   position: absolute;
-  top: 4px;
+  top: 28px;
   font-family: 'Space Mono', monospace;
   font-size: 0.58rem;
   color: var(--now-line);
