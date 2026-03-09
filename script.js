@@ -8,18 +8,41 @@
    Edit this array to add/modify trains.
    Times are in 24-hour "HH:MM" format.
    Colors: "color1" | "color2" | "color3" | "color4"
-───────────────────────────────────────────── */
+───────────────────────────────────────────── 
+Express → color1
+Semi Express → color2
+Slow → color3
+*/
+// bambalapitiya to panadura
 const TRAIN_SCHEDULE = [
-  { start: "17:20", end: "19:40", color: "color1", name: "EX-1" },
-  { start: "17:25", end: "19:30", color: "color1", name: "EX-3" },
-  { start: "17:30", end: "19:40", color: "color1", name: "A1"   },
-  { start: "17:40", end: "19:30", color: "color2", name: "B1"   },
-  { start: "17:45", end: "19:50", color: "color2", name: "B2"   },
-  { start: "17:50", end: "19:45", color: "color2", name: "B3"   },
-  { start: "18:00", end: "19:55", color: "color3", name: "C1"   },
-  { start: "19:30", end: "21:00", color: "color3", name: "C2"   },
-  { start: "19:50", end: "21:30", color: "color4", name: "D1"   },
-  // ← Add more trains here
+  { start: "04:32", end: "05:01", color: "color1", name: "8710" },
+  { start: "05:53", end: "06:32", color: "color3", name: "1507" },
+  { start: "06:10", end: "06:50", color: "color3", name: "1512" },
+  { start: "06:48", end: "07:28", color: "color3", name: "3800" },
+  { start: "07:20", end: "07:56", color: "color2", name: "4856" },
+  { start: "07:55", end: "08:35", color: "color2", name: "3803" },
+  { start: "08:10", end: "08:50", color: "color1", name: "1531" },
+  { start: "08:59", end: "09:39", color: "color3", name: "8736" },
+  { start: "09:52", end: "10:45", color: "color3", name: "8741" },
+  { start: "11:28", end: "12:08", color: "color3", name: "8742" },
+  { start: "12:50", end: "13:30", color: "color3", name: "8744" },
+  { start: "13:48", end: "14:28", color: "color3", name: "8748" },
+  { start: "14:13", end: "14:53", color: "color3", name: "8751" },
+  { start: "14:28", end: "15:08", color: "color3", name: "8749" },
+  { start: "15:38", end: "16:18", color: "color3", name: "8756" },
+  { start: "16:30", end: "17:00", color: "color1", name: "8765" },
+  { start: "16:36", end: "17:15", color: "color3", name: "8761" },
+  { start: "16:45", end: "17:18", color: "color1", name: "8763" },
+  { start: "17:20", end: "17:48", color: "color1", name: "8062" },
+  { start: "17:35", end: "18:12", color: "color3", name: "8759" },
+  { start: "18:05", end: "18:45", color: "color2", name: "1595" },
+  { start: "18:30", end: "18:57", color: "color1", name: "8766" },
+  { start: "18:33", end: "19:12", color: "color3", name: "8773" },
+  { start: "18:49", end: "19:30", color: "color3", name: "8772" },
+  { start: "19:29", end: "20:05", color: "color1", name: "8777" },
+  { start: "20:03", end: "20:43", color: "color3", name: "8780" },
+  { start: "20:53", end: "21:33", color: "color3", name: "8782" },
+  { start: "21:48", end: "22:28", color: "color3", name: "8783" },
 ];
 
 /* ─────────────────────────────────────────────
